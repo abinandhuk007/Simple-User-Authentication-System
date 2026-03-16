@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+    <h2 id="welcomeText">Welcome Back</h2>
+
+    <button class="secondary" onclick="goToLogin()">Back to Login Page</button>
+
+    <button class="danger" onclick="deleteAllUsers()">
+        Delete / Clear All Users
+    </button>
+
+    <div class="message" id="welcomeMessage"></div>
+</div>
+
+<script>
+    function showUsernameFromUrl() {
+        const params = new URLSearchParams(window.location.search);
+        const username = params.get("username");
+
+        const welcomeText = document.getElementById("welcomeText");
+
+        if (username) {
+            welcomeText.textContent = "Welcome Back, " + username;
+        } else {
+            welcomeText.textContent = "Welcome Back";
+        }
+    }
+
+    function goToLogin() {
+        window.location.href = "login.html";
+    }
+
+    function deleteAllUsers() {
+        fetch("/api/users", {
+            method: "DELETE"
+        })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById("welcomeMessage").textContent = data.message;
+            })
+            .catch(error => {
+                document.getElementById("welcomeMessage").textContent = "Error: " + error;
+            });
+    }
+
+    showUsernameFromUrl();
+</script>
+
+</body>
+</html>
+

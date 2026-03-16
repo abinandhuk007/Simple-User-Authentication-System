@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+    <h1>Welcome Back</h1>
+
+    <form id="loginForm">
+        <div class="input-group">
+            <input type="text" id="loginUsername" placeholder=" " required>
+            <label for="loginUsername">Username</label>
+        </div>
+
+        <div class="input-group">
+            <input type="password" id="loginPassword" placeholder=" " required>
+            <label for="loginPassword">Password</label>
+        </div>
+
+        <button type="submit">Log In</button>
+    </form>
+
+    <div class="message" id="loginMessage"></div>
+
+    <button class="secondary" onclick="goToSignup()">Create an Account</button>
+</div>
+
+<script>
+    function goToSignup() {
+        window.location.href = "signup.html";
+    }
+
+    const loginForm = document.getElementById("loginForm");
+    const loginMessage = document.getElementById("loginMessage");
+
+    loginForm.addEventListener("submit", function (event) {
+        event.preventDefault();
+
+        const username = document.getElementById("loginUsername").value;
+        const password = document.getElementById("loginPassword").value;
+
+        fetch("/api/login", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                username: username,
+                password: password
+            })
+        })
+            .then(response => response.json())
+            .then(data => {
+                loginMessage.textContent = data.message;
+
+                if (data.success) {
+                    const encodedUsername = encodeURIComponent(username);
+                    window.location.href = "welcome.html?username=" + encodedUsername;
+                }
+            })
+            .catch(error => {
+                loginMessage.textContent = "Error: " + error;
+            });
+    });
+</script>
+
+</body>
+</html>
+
